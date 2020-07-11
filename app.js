@@ -9,6 +9,8 @@ const lockButton = document.querySelectorAll(".lock");
 const closeAdjustments = document.querySelectorAll(".close-adjustment");
 const sliderContainers = document.querySelectorAll(".sliders");
 let initialColors;
+//This is for local storage
+let savedPalettes = [];
 
 //Event listeners
 generateBtn.addEventListener("click", randomColors);
@@ -44,6 +46,12 @@ adjustButton.forEach((button, index) => {
 closeAdjustments.forEach((button, index) => {
   button.addEventListener("click", () => {
     closeAdjustmentPanel(index);
+  });
+});
+
+lockButton.forEach((button, index) => {
+  button.addEventListener("click", (e) => {
+    lockLayer(e, index);
   });
 });
 
@@ -205,6 +213,18 @@ function openAdjustmentPanel(index) {
 
 function closeAdjustmentPanel(index) {
   sliderContainers[index].classList.remove("active");
+}
+
+function lockLayer(e, index) {
+  const lockSVG = e.target.children[0];
+  const activeBg = colorDivs[index];
+  activeBg.classList.toggle("locked");
+
+  if (lockSVG.classList.contains("fa-lock-open")) {
+    e.target.innerHTML = '<i class="fas fa-lock"></i>';
+  } else {
+    e.target.innerHTML = '<i class="fas fa-lock-open"></i>';
+  }
 }
 
 randomColors();
