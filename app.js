@@ -25,9 +25,15 @@ function generateHex() {
 }
 
 function randomColors() {
+  //
+  initialColors = [];
+
   colorDivs.forEach((div, index) => {
     const hextText = div.children[0];
     const randomColor = generateHex();
+
+    //Add it to the array
+    initialColors.push(chroma(randomColor).hex());
 
     //Add the color to the bg
     div.style.backgroundColor = randomColor;
@@ -45,6 +51,8 @@ function randomColors() {
 
     colorizeSliders(color, hue, brightness, saturation);
   });
+  //Reset Inputs
+  resetInputs();
 }
 
 function checkTextContrast(color, text) {
@@ -89,7 +97,7 @@ function hslControls(e) {
   const brightness = sliders[1];
   const saturation = sliders[2];
 
-  const bgColor = colorDivs[index].querySelector("h2").innerText;
+  const bgColor = initialColors[index];
 
   let color = chroma(bgColor)
     .set("hsl.s", saturation.value)
@@ -97,6 +105,9 @@ function hslControls(e) {
     .set("hsl.h", hue.value);
 
   colorDivs[index].style.backgroundColor = color;
+
+  //Colorize inputs/sliders
+  colorizeSliders(color, hue, brightness, saturation);
 }
 
 function updateTextUi(index) {
@@ -111,6 +122,27 @@ function updateTextUi(index) {
   for (icon of icons) {
     checkTextContrast(color, icon);
   }
+}
+
+function resetInputs() {
+  const sliders = document.querySelectorAll(".sliders input");
+  sliders.forEach((slider) => {
+    if (slider.name === "hue") {
+      const hueColor = initialColors[slider.getAttribute("data-hue")];
+      const hueValue = chroma(hueColor).hsl()[0];
+      slider.value = Math.floor(hueValue);
+    }
+    if (slider.name === "saturation") {
+      const satColor = initialColors[slider.getAttribute("data-sat")];
+      const satValue = chroma(satColor).hsl()[1];
+      slider.value = Math.floor(satValue * 100) / 100;
+    }
+    if (slider.name === "brightness") {
+      const brightColor = initialColors[slider.getAttribute("data-bright")];
+      const brightValue = chroma(brightColor).hsl()[2];
+      slider.value = Math.floor(brightValue * 100) / 100;
+    }
+  });
 }
 
 randomColors();
