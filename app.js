@@ -64,7 +64,12 @@ function randomColors() {
     const randomColor = generateHex();
 
     //Add it to the array
-    initialColors.push(chroma(randomColor).hex());
+    if (div.classList.contains("locked")) {
+      initialColors.push(hextText.innerText);
+      return;
+    } else {
+      initialColors.push(chroma(randomColor).hex());
+    }
 
     //Add the color to the bg
     div.style.backgroundColor = randomColor;
